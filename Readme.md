@@ -30,4 +30,4 @@ We plan to use Django in our project since it is a framework that we all have ex
 
 ## Other development notes
 ***
-
+Team will use a Jira board linked to a Github repository for development of project files, a Discord server for planning, collaborating, and holding stand-up meetings, and a Google drive for collaborating on project documents before doing pull requests.
