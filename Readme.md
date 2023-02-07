@@ -18,10 +18,15 @@ We plan to use Django in our project since it is a framework that we all have ex
 
 ## Build instructions (WIP)
 Install `NodeJS` from https://nodejs.org/en/
+
 Install `yarn` with `$ npm install -g yarn`
+
 Clone the git repo `$ git clone https://github.com/JeepBarn/JeepBarn.git`
+
 Navigate to `JeepBarn/jeep_barn_client` and `JeepBarn/jeep_barn_server` and install dependencies using `$ yarn`
+
 Build the server with `$ yarn dev` inside of `JeepBarn/jeep_barn_server`
+
 Build the client with `$ yarn dev` inside of `JeepBarn/jeep_barn_client`
 
 ## Unit testing instructions (WIP)
