@@ -1,10 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect, ChangeEventHandler, ChangeEvent } from 'react'
 import './Calendar.css'
 
 function Calendar() {
-    const [date, setDate] = useState<Date>(new Date("2023-02-01T00:00:00"))
-    const [serverResponse, setServerResponse] = useState("")
 
+    // Array to convert integers to month names
+    const months = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    // Currently selected reservation date
+    const [date, setDate] = useState<Date>(new Date())
+    const [serverResponse, setServerResponse] = useState("")
+    const initialMonth = date.getMonth();
+
+    // Calculates days to display
+    function daysInMonth(date : Date) {
+        return (new Date(date.getFullYear(), date.getMonth()+1, 0)).getDate();
+    }
+
+    // Sends PUT request to server to reserve date
     function reserveDate() {
         const data = {
             date,
@@ -25,37 +39,84 @@ function Calendar() {
             });
     }
 
-    function changeDate(day: number) {
-        if (day < 10) {
-            setDate(new Date(`2023-02-0${day}T00:00:00`));
-        } else {
-            setDate(new Date(`2023-02-${day}T00:00:00`));
-        }
+    function firstOfMonth() {
+        const updatedDate = new Date(date.getTime());
+        updatedDate.setDate(1);
+        return updatedDate.getDay();
+    }
+
+    // Changes the selected reservation date
+    function changeDate(newDay: number) {
+        console.log("ayaaaaa");
+        const updatedDate = new Date(date.getTime());
+        updatedDate.setDate(newDay);
+        setDate(updatedDate);
+        console.log(updatedDate);
+    }
+
+    function changeMonth(onChangeEvent : ChangeEvent<HTMLSelectElement>) {
+        console.log("ay");
+        const newMonth = Number(onChangeEvent.currentTarget.value);
+        const updatedDate = new Date(date.getTime());
+        updatedDate.setMonth(newMonth);
+        setDate(updatedDate);
+        console.log(updatedDate);
+    }
+
+    function changeYear(onChangeEvent : ChangeEvent<HTMLSelectElement>) {
+        console.log("ay663");
+        const newYear = Number(onChangeEvent.currentTarget.value);
+        const updatedDate = new Date(date.getTime());
+        updatedDate.setFullYear(newYear);
+        setDate(updatedDate);
+        console.log(updatedDate);
     }
 
     return (
-        <div>
-            <div className="calendar">
-                    <h1 className="title">February</h1>
-                    <div className="grid">
-                        <div className="cell" style={{gridColumnStart:4}}>
-                            <button className="button" onClick={() => {
-                                setDate(new Date("2023-02-01T00:00:00"));
-                            }}>1</button>
-                        </div>
-                            {Array.apply(0, Array(27)).map(function (x, i) {
-                                const day = i+2;
-                                return (
-                                    <div className="cell">
-                                        <button className="button" onClick={() => changeDate(day)}>{day}</button>
-                                    </div>
-                                )
-                            })}
-                    </div>
-                    <button className="reserve" onClick={reserveDate}>Reserve: {date.toDateString()}</button>
-                    <h2>Server Response: {serverResponse}</h2>
-                </div>
+        <div className="container">
             <div>
+                <select value={initialMonth} className="month" onChange={changeMonth}>
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">Obtober</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+                <select className="year" onChange={changeYear}>
+                    {Array.apply(0, Array(11)).map(function (x, i) {
+                        const currentYear = (new Date()).getFullYear();
+                        return (
+                            <option value={currentYear+i}>{currentYear+i}</option>
+                        )
+                    })}
+                </select>
+            </div>
+            <div className="calendar">
+                <h1 className="title">{months[date.getMonth()]}</h1>
+                <div className="grid">
+                    <div className="cell" style={{gridColumnStart:firstOfMonth()+1}}>
+                        <button className="button" onClick={() => {
+                            setDate(date);
+                        }}>1</button>
+                    </div>
+                        {Array.apply(0, Array(daysInMonth(date)-1)).map(function (x, i) {
+                            const day = i+2;
+                            return (
+                                <div className="cell">
+                                    <button className="button" onClick={() => changeDate(day)}>{day}</button>
+                                </div>
+                            )
+                        })}
+                </div>
+                <button className="reserve" onClick={reserveDate}>Reserve: {date.toDateString()}</button>
+                <h2>Server Response: {serverResponse}</h2>
             </div>
         </div>
     )
