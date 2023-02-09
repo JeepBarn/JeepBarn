@@ -47,35 +47,29 @@ function Calendar() {
 
     // Changes the selected reservation date
     function changeDate(newDay: number) {
-        console.log("ayaaaaa");
         const updatedDate = new Date(date.getTime());
         updatedDate.setDate(newDay);
         setDate(updatedDate);
-        console.log(updatedDate);
     }
 
     function changeMonth(onChangeEvent : ChangeEvent<HTMLSelectElement>) {
-        console.log("ay");
         const newMonth = Number(onChangeEvent.currentTarget.value);
         const updatedDate = new Date(date.getTime());
         updatedDate.setMonth(newMonth);
         setDate(updatedDate);
-        console.log(updatedDate);
     }
 
     function changeYear(onChangeEvent : ChangeEvent<HTMLSelectElement>) {
-        console.log("ay663");
         const newYear = Number(onChangeEvent.currentTarget.value);
         const updatedDate = new Date(date.getTime());
         updatedDate.setFullYear(newYear);
         setDate(updatedDate);
-        console.log(updatedDate);
     }
 
     return (
         <div className="container">
             <div>
-                <select value={initialMonth} className="month" onChange={changeMonth}>
+                <select className="select" value={initialMonth} onChange={changeMonth}>
                     <option value="0">January</option>
                     <option value="1">February</option>
                     <option value="2">March</option>
@@ -89,7 +83,7 @@ function Calendar() {
                     <option value="10">November</option>
                     <option value="11">December</option>
                 </select>
-                <select className="year" onChange={changeYear}>
+                <select className="select" onChange={changeYear}>
                     {Array.apply(0, Array(11)).map(function (x, i) {
                         const currentYear = (new Date()).getFullYear();
                         return (
