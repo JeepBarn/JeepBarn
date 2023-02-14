@@ -20,8 +20,11 @@ function Calendar() {
 
     // Sends PUT request to server to reserve date
     function reserveDate() {
+        const jeepModel = "jeepjeep";
+        const reservationDate = date.toISOString();
         const data = {
-            date,
+            jeepModel,
+            reservationDate,
         }
         const options = {
             method: 'PUT',

@@ -9,16 +9,19 @@ app.use(cors());
 app.use(express.json());
 
 type ReserveDateBody = {
-  date: Date,
-  jeep: any
+  jeepModel: string
+  reservationDate: string,
 }
 
-app.put("/", (req, res) => {
-  const {date, jeep} = req.body as ReserveDateBody;
-  res.json({
-    date,
-    jeep,
+app.put("/", async (req, res) => {
+  const {jeepModel, reservationDate} = req.body as ReserveDateBody;
+  const reservation = await client.reservation.create({
+    data: {
+      jeepModel,
+      reservationDate,
+    }
   });
+  res.json({reservation});
 });
 
 app.listen(3000, () => {
