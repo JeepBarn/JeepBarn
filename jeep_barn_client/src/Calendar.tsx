@@ -14,8 +14,6 @@ function Calendar() {
     const [year, setYear] = useState<number>(new Date().getFullYear());
     const [day, setDay] = useState<number>(new Date().getDay());
     const [reservedDays, setReservedDays] = useState<number[]>();
-    // Updates on new reservation
-    const [reservedDate, setReservedDate] = useState<boolean>(false);
 
     // Updates reserved dates on month change
     useEffect(() => {
@@ -34,7 +32,7 @@ function Calendar() {
                 setReservedDays(myJson);
                 setServerResponse(myJson);
             });
-    }, [monthIndex, reserveDate]);
+    }, [monthIndex]);
     
     // Calculates days to display
     function daysInMonth() {
@@ -62,7 +60,8 @@ function Calendar() {
                 return response.json();
             })
             .then((myJson) => {
-                setReservedDate(!reservedDate);
+                if (reservedDays)
+                setReservedDays([...reservedDays, day]);
                 setServerResponse(JSON.stringify(myJson));
             });
     }
