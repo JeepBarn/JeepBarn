@@ -32,7 +32,7 @@ function Calendar() {
                 setReservedDays(myJson);
                 setServerResponse(myJson);
             });
-    }, [monthIndex]);
+    }, [monthIndex, year]);
     
     // Calculates days to display
     function daysInMonth() {
