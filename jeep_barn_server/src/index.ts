@@ -21,6 +21,18 @@ app.post("/jeeps/reserve", async (req : RequestWithJWTBody, res) => {
   const jeepModel = req.body.jeepModel;
   // ISO String
   const reservationDate = req.body.reservationDate;
+  const reservations = await client.reservation.findMany({
+    where: {
+      reservationDate : {
+        gte: reservationDate,
+        lte: reservationDate,
+      }
+    }
+  });
+  if (Object.keys(reservations).length > 0) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
   const reservation = await client.reservation.create({
     data: {
       user : {connect : { id : userId }},
@@ -36,11 +48,6 @@ function daysInMonth(year : number, monthIndex : number) {
 }
 
 app.get("/jeeps/:year/:monthIndex", async (req : RequestWithJWTBody, res) => {
-  const userId = req.jwtBody?.userId;
-  if (!userId) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
-  }
   const monthIndex = Number(req.params.monthIndex);
   const year = Number(req.params.year);
   const totalDays = daysInMonth(year, monthIndex);
@@ -69,7 +76,7 @@ app.post("/signup", async (req, res) => {
   res.json({ user, token });
 });
 
-app.get("/login", async (req : RequestWithJWTBody, res) => {
+app.post("/login", async (req : RequestWithJWTBody, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const user = await client.user.findFirst({

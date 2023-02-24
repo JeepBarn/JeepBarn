@@ -5,13 +5,13 @@ type States = {
     setLoggedInUser: ((loggedInUser: string) => void) ;
 }
 
-function Signup(props : States) {
+function Login(props : States) {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [serverResponse, setServerResponse] = useState("");
 
-    function createAccount() {
+    function loginAccount() {
         const data = {
             username,
             password,
@@ -23,7 +23,7 @@ function Signup(props : States) {
             },
             body: JSON.stringify(data)
         }
-        fetch('http://localhost:3000/signup', options)
+        fetch('http://localhost:3000/login', options)
             .then((response) => {
                 return response.json();
             })
@@ -31,7 +31,9 @@ function Signup(props : States) {
                 if (myJson.token) {
                     localStorage.setItem("token", myJson.token);
                     props.setLoggedInUser(myJson.user.username);
-                    setServerResponse("Account created!");
+                    setServerResponse("Logged in!");
+                } else {
+                    setServerResponse("Invalid username or password");
                 }
             });
     }
@@ -41,7 +43,7 @@ function Signup(props : States) {
             <div className="loginForm">
                 <input type="text" placeholder="Username" onChange={(e) => {setUsername(e.target.value)}}/>
                 <input type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}}/>
-                <button className="submit" onClick={createAccount}>Submit</button>
+                <button className="submit" onClick={loginAccount}>Submit</button>
             </div>
             <p>{serverResponse}</p>
         </div>
@@ -49,4 +51,4 @@ function Signup(props : States) {
 
 }
 
-export default Signup
+export default Login

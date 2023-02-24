@@ -21,7 +21,6 @@ function Calendar() {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization': 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY3NzE4MjA4MH0.HGE_79Ey6ESG3emQryAujSHLYrCBuS6_8KUbwyGY5Qs'
             },
         }
         fetch('http://localhost:3000/jeeps/'+year+'/'+monthIndex, options)
@@ -30,7 +29,6 @@ function Calendar() {
             })
             .then((myJson) => {
                 setReservedDays(myJson);
-                setServerResponse(myJson);
             });
     }, [monthIndex, year]);
     
@@ -51,7 +49,7 @@ function Calendar() {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
-                'Authorization' : 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY3NzE4MjA4MH0.HGE_79Ey6ESG3emQryAujSHLYrCBuS6_8KUbwyGY5Qs'
+                'Authorization': `bearer ${localStorage.getItem("token")}`
             },
             body: JSON.stringify(data)
         }
@@ -60,9 +58,14 @@ function Calendar() {
                 return response.json();
             })
             .then((myJson) => {
-                if (reservedDays)
-                setReservedDays([...reservedDays, day]);
-                setServerResponse(JSON.stringify(myJson));
+                if (!(myJson.message === "Unauthorized")) {
+                    if (reservedDays) {
+                        setReservedDays([...reservedDays, day]);
+                    }
+                    setServerResponse("Reserved!");
+                } else {
+                    setServerResponse("Unauthorized");
+                }
             });
     }
 
@@ -108,7 +111,7 @@ function Calendar() {
                     {Array.apply(0, Array(11)).map(function (x, i) {
                         const currentYear = (new Date()).getFullYear();
                         return (
-                            <option value={currentYear+i}>{currentYear+i}</option>
+                            <option key={1000+i} value={currentYear+i}>{currentYear+i}</option>
                         )
                     })}
                 </select>
@@ -124,14 +127,14 @@ function Calendar() {
                         {Array.apply(0, Array(daysInMonth()-1)).map(function (x, i) {
                             const day = i+2;
                             return (
-                                <div className="cell">
+                                <div key={2000+i} className="cell">
                                     <button className={reservedDays?.includes(day) && "reservedButton" || "button"} onClick={() => changeDay(day)}>{day}</button>
                                 </div>
                             )
                         })}
                 </div>
                 <button className="reserve" onClick={reserveDate}>Reserve: {new Date(year, monthIndex, day).toDateString()}</button>
-                <h2>Server Response: {serverResponse}</h2>
+                {serverResponse}
             </div>
         </div>
     )
