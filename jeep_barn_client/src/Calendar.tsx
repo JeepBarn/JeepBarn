@@ -79,7 +79,7 @@ function Calendar(props : States) {
     }
 
     function firstOfMonth() {
-        const updatedDate = new Date(year, monthIndex+1, day);
+        const updatedDate = new Date(year, monthIndex, day);
         updatedDate.setDate(1);
         return updatedDate.getDay();
     }
