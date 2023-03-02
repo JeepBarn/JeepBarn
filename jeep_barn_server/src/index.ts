@@ -19,10 +19,21 @@ app.post("/jeeps/reserve", async (req : RequestWithJWTBody, res) => {
     return;
   }
   const jeepModel = req.body.jeepModel;
+  const jeepCost = Number(jeepModel.substring(4));
+  const user = await client.user.findUnique({
+    where: {
+      id: userId
+    },
+  });
+  if (jeepCost > user!!.balance) {
+    res.status(401).json({ message: "Insufficient Funds" });
+    return;
+  }
   // ISO String
   const reservationDate = req.body.reservationDate;
   const reservations = await client.reservation.findMany({
     where: {
+      jeepModel,
       reservationDate : {
         gte: reservationDate,
         lte: reservationDate,
@@ -30,7 +41,7 @@ app.post("/jeeps/reserve", async (req : RequestWithJWTBody, res) => {
     }
   });
   if (Object.keys(reservations).length > 0) {
-    res.status(401).json({ message: "Unauthorized" });
+    res.status(401).json({ message: "Date Already Reserved" });
     return;
   }
   const reservation = await client.reservation.create({
@@ -40,19 +51,31 @@ app.post("/jeeps/reserve", async (req : RequestWithJWTBody, res) => {
       reservationDate,
     }
   });
-  res.json({reservation});
+  const updatedUser = await client.user.update({
+    where: {
+      id: userId
+    },
+    data: {
+      balance: {
+        decrement: jeepCost
+      }
+    }
+  });
+  res.json({reservation, "user" : { "balance" : updatedUser.balance }});
 });
 
 function daysInMonth(year : number, monthIndex : number) {
   return (new Date(year, monthIndex+1, 0)).getDate();
 }
 
-app.get("/jeeps/:year/:monthIndex", async (req : RequestWithJWTBody, res) => {
+app.get("/jeeps/:jeepModel/:year/:monthIndex", async (req : RequestWithJWTBody, res) => {
+  const jeepModel = req.params.jeepModel;
   const monthIndex = Number(req.params.monthIndex);
   const year = Number(req.params.year);
   const totalDays = daysInMonth(year, monthIndex);
   const reservations = await client.reservation.findMany({
     where: {
+      jeepModel,
       reservationDate : {
         gte: (new Date(year, monthIndex+1, 1)).toISOString(),
         lte: (new Date(year, monthIndex+1, totalDays)).toISOString(),
@@ -70,10 +93,11 @@ app.post("/signup", async (req, res) => {
     data: {
       username,
       passwordHash,
+      balance: 1000
     },
   });
-  const token = jwt.sign({userId: user.id}, process.env.ENCRYPTION_KEY!!);
-  res.json({ user, token });
+  const token = jwt.sign({userId: user.id, balance: user.balance}, process.env.ENCRYPTION_KEY!!);
+  res.json({"user" : { "id" : user?.id, "username" : user?.username, "balance" : user?.balance }, token});
 });
 
 app.post("/login", async (req : RequestWithJWTBody, res) => {
@@ -95,8 +119,8 @@ app.post("/login", async (req : RequestWithJWTBody, res) => {
     return;
   }
 
-  const token = jwt.sign({ userId: user.id }, process.env.ENCRYPTION_KEY!!);
-  res.json({"user" : { "id" : user?.id, "username" : user?.username }, token});
+  const token = jwt.sign({ userId: user.id, balance: user.balance }, process.env.ENCRYPTION_KEY!!);
+  res.json({"user" : { "id" : user?.id, "username" : user?.username, "balance" : user?.balance }, token});
 });
 
 app.listen(3000, () => {

@@ -2,7 +2,8 @@ import { useState, useEffect, ChangeEventHandler, ChangeEvent, useReducer } from
 import './Signup.css'
 
 type States = {
-    setLoggedInUser: ((loggedInUser: string) => void) ;
+    setLoggedInUser: ((loggedInUser: string) => void);
+    setUserBalance: ((userBalance: number) => void);
 }
 
 function Signup(props : States) {
@@ -31,6 +32,7 @@ function Signup(props : States) {
                 if (myJson.token) {
                     localStorage.setItem("token", myJson.token);
                     props.setLoggedInUser(myJson.user.username);
+                    props.setUserBalance(myJson.user.balance);
                     setServerResponse("Account created!");
                 }
             });

@@ -8,10 +8,7 @@ import Login from './Login';
 function App() {
   const [page, setPage] = useState("Login");
   const [loggedInUser, setLoggedInUser] = useState("");
-
-  function updateLoggedInUser(loggedInUser : string) {
-    setLoggedInUser(loggedInUser);
-  }
+  const [userBalance, setUserBalance] = useState(0);
 
   function logout() {
     localStorage.removeItem("token");
@@ -21,7 +18,12 @@ function App() {
   return (
     <div className="App">
       <div className="welcome">
-        {!(loggedInUser==="") && "Hello, " + loggedInUser || ""}
+        <div>
+          {!(loggedInUser==="") && "Hello, " + loggedInUser || ""}
+        </div>
+        <div>
+          {!(loggedInUser==="") && `Money: $${userBalance}` || ""}
+        </div>
       </div>
       <div className="logout">
         <button className="logoutButton" onClick={logout}>Logout</button>
@@ -36,9 +38,9 @@ function App() {
           <button className="navButton" onClick={() => setPage("Other")}>Other</button>
         </div>
       </nav>
-      {(page === "Login" && <Login setLoggedInUser={updateLoggedInUser} />)}
-      {(page === "Signup" && <Signup setLoggedInUser={updateLoggedInUser} />)}
-      {(page === "Reservations" && <Calendar />)}
+      {(page === "Login" && <Login setLoggedInUser={setLoggedInUser} setUserBalance={setUserBalance} />)}
+      {(page === "Signup" && <Signup setLoggedInUser={setLoggedInUser} setUserBalance={setUserBalance} />)}
+      {(page === "Reservations" && <Calendar setUserBalance={setUserBalance} />)}
     </div>
   )
 }
