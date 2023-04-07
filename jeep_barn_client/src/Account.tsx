@@ -8,6 +8,7 @@ type States = {
 function Account(props : States) {
 
     const [userBalance, setUserBalance] = useState();
+    const [reservedDays, setReservedDays] = useState<number[]>();
 
 
     
@@ -21,6 +22,13 @@ function Account(props : States) {
                 <h3>Add money to account</h3>
                 <input type="text" placeholder="Amount of money" />
                
+            </div>
+            <div>
+                <h3>Current Reservations</h3>
+            </div>
+            <div>
+                <h3>Delete Reservation</h3>
+                
             </div>
             
               
