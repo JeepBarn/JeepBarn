@@ -4,6 +4,7 @@ import './App.css'
 import Calendar from './Calendar';
 import Signup from './Signup';
 import Login from './Login';
+import Account from './account'
 
 function App() {
   const [page, setPage] = useState("Login");
@@ -35,12 +36,15 @@ function App() {
           <button className="navButton" onClick={() => setPage("Login")}>Login</button>
           <button className="navButton" onClick={() => setPage("Signup")}>Signup</button>
           <button className="navButton" onClick={() => setPage("Reservations")}>Reservations</button>
+          <button className="navButton" onClick={() => setPage("Account")}>Account</button>
           <button className="navButton" onClick={() => setPage("Other")}>Other</button>
         </div>
       </nav>
       {(page === "Login" && <Login setLoggedInUser={setLoggedInUser} setUserBalance={setUserBalance} />)}
       {(page === "Signup" && <Signup setLoggedInUser={setLoggedInUser} setUserBalance={setUserBalance} />)}
       {(page === "Reservations" && <Calendar setUserBalance={setUserBalance} />)}
+      {(page === "Account" && <Account setUserBalance={setUserBalance} />)}
+
     </div>
   )
 }

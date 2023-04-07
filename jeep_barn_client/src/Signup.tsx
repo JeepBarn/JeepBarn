@@ -11,11 +11,13 @@ function Signup(props : States) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [serverResponse, setServerResponse] = useState("");
+    const [usertype, setusertype] = useState("");
 
     function createAccount() {
         const data = {
             username,
             password,
+            usertype,
         }
         const options = {
             method: 'POST',
@@ -43,6 +45,8 @@ function Signup(props : States) {
             <div className="loginForm">
                 <input type="text" placeholder="Username" onChange={(e) => {setUsername(e.target.value)}}/>
                 <input type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}}/>
+                <input type="text" placeholder="User Type" onChange={(e) => {setusertype(e.target.value)}}/>
+                                                
                 <button className="submit" onClick={createAccount}>Submit</button>
             </div>
             <p>{serverResponse}</p>
