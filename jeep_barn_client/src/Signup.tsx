@@ -7,6 +7,13 @@ type States = {
 }
 
 function Signup(props : States) {
+    const [value, setValue] = useState("");
+
+    const handleChange = (event) => {
+
+    setValue(event.target.value);
+
+    };
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -45,7 +52,14 @@ function Signup(props : States) {
             <div className="loginForm">
                 <input type="text" placeholder="Username" onChange={(e) => {setUsername(e.target.value)}}/>
                 <input type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}}/>
-                <input type="text" placeholder="User Type" onChange={(e) => {setusertype(e.target.value)}}/>
+                <label>
+                    <select name="usertype" id="1" value={value} onChange={handleChange}>
+                        <option value="customer">Customer</option>
+                        <option value="clerk">Clerk</option>
+                        <option value="manager">Manager</option>
+                    </select>                    
+                </label>
+                
                                                 
                 <button className="submit" onClick={createAccount}>Submit</button>
             </div>
