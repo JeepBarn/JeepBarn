@@ -19,8 +19,9 @@ function Account(props : States) {
     return (
         <div className="container">
             <div>
-                <h3>Add money to account</h3>
+                <h3>Add money</h3>
                 <input type="text" placeholder="Amount of money" />
+                <button className="addMoney">Add Money</button>
                
             </div>
             <div>
