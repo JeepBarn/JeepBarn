@@ -20,7 +20,8 @@ CREATE TABLE "Reservation" (
 CREATE TABLE "Permissions" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "userId" INTEGER NOT NULL,
-    "payrolls" BOOLEAN NOT NULL,
+    "clerk" BOOLEAN NOT NULL,
+    "manager" BOOLEAN NOT NULL,
     CONSTRAINT "Permissions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 

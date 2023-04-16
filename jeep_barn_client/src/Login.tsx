@@ -3,7 +3,8 @@ import './Signup.css'
 
 type userDetails = {
     username : string,
-    payroll : boolean,
+    manager : boolean,
+    clerk : boolean,
 }
 
 type States = {
@@ -36,7 +37,11 @@ function Login(props : States) {
             .then((myJson) => {
                 if (myJson.token) {
                     localStorage.setItem("token", myJson.token);
-                    props.setLoggedInUser({username : myJson.user.username, payroll: myJson.permissions.payrolls});
+                    props.setLoggedInUser({
+                        username : myJson.user.username,
+                        clerk : myJson.user.permissions.clerk,
+                        manager: myJson.user.permissions.manager
+                    });
                     props.setUserBalance(myJson.user.balance);
                     setServerResponse("Logged in!");
                 } else {

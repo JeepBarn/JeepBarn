@@ -3,7 +3,8 @@ import './Signup.css'
 
 type userDetails = {
     username : string,
-    payroll : boolean,
+    clerk : boolean,
+    manager : boolean,
 }
 
 type States = {
@@ -44,7 +45,11 @@ function Signup(props : States) {
             .then((myJson) => {
                 if (myJson.token) {
                     localStorage.setItem("token", myJson.token);
-                    props.setLoggedInUser({username : myJson.user.username, payroll: myJson.user.permissions.payrolls});
+                    props.setLoggedInUser({
+                        username : myJson.user.username,
+                        clerk : myJson.user.permissions.clerk,
+                        manager: myJson.user.permissions.manager
+                    });
                     props.setUserBalance(myJson.user.balance);
                     setServerResponse("Account created!");
                 }
@@ -57,7 +62,7 @@ function Signup(props : States) {
                 <input type="text" placeholder="Username" onChange={(e) => {setUsername(e.target.value)}}/>
                 <input type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}}/>
                 <label>
-                    <select name="usertype" id="1" value={usertype} onChange={handleChange}>
+                    <select className="roles" name="usertype" id="1" value={usertype} onChange={handleChange}>
                         <option value="customer">Customer</option>
                         <option value="clerk">Clerk</option>
                         <option value="manager">Manager</option>

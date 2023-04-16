@@ -12,6 +12,12 @@ app.use(cors());
 app.use(express.json());
 app.use(authenticationMiddleware);
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                         *
+ *                   Jeep Reservations                     *
+ *                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 app.post("/jeeps/reserve", async (req : RequestWithJWTBody, res) => {
   const userId = req.jwtBody?.userId;
   if (!userId) {
@@ -87,6 +93,12 @@ app.get("/jeeps/:jeepModel/:year/:monthIndex", async (req : RequestWithJWTBody, 
   res.json(reservations.map(reservation => (new Date(reservation.reservationDate)).getDate()));
 });
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                         *
+ *                     User Creation                       *
+ *                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 app.post("/signup", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -101,15 +113,16 @@ app.post("/signup", async (req, res) => {
     },
   });
   
-  let payrolls = false;
+  let manager = false;
   if (userType == "manager") {
-    payrolls = true;
+    manager = true;
   }
 
   const permissions = await client.permissions.create({
     data: {
       user : {connect : { id : user.id }},
-      payrolls,
+      clerk : userType == "clerk",
+      manager : userType == "manager",
     },
   });
 
@@ -144,6 +157,32 @@ app.post("/login", async (req : RequestWithJWTBody, res) => {
 
   const token = jwt.sign({ userId: user.id, balance: user.balance }, process.env.ENCRYPTION_KEY!!);
   res.json({"user" : { "id" : user?.id, "username" : user?.username, "balance" : user?.balance, permissions}, token});
+});
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                         *
+ *                      Management                         *
+ *                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+app.get("/clerks", async (req : RequestWithJWTBody, res) => {
+
+  const clerkPermissions = await client.permissions.findMany({
+    where: {
+      clerk : true,
+    }
+  });
+
+  let clerkUserIds : number[] = [];
+  clerkPermissions.forEach((clerkPermission) => {clerkUserIds.push(clerkPermission.userId);});
+
+  const clerks = await client.user.findMany({
+    where: {
+      id : { in: clerkUserIds },
+    }
+  });
+
+  res.json(clerks);
 });
 
 app.listen(3000, () => {

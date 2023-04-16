@@ -32,5 +32,6 @@ model Permissions {
   id Int @id @default(autoincrement())
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int @unique
-  payrolls Boolean
+  clerk Boolean
+  manager Boolean
 }
