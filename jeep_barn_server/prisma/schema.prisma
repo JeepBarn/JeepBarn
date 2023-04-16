@@ -16,6 +16,7 @@ model User {
   passwordHash String
   balance Int
   reservations Reservation[]
+  permissions Permissions?
 }
 
 model Reservation {
@@ -24,4 +25,12 @@ model Reservation {
   userId Int
   jeepModel String
   reservationDate DateTime
+  lojacked Boolean
+}
+
+model Permissions {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int @unique
+  payrolls Boolean
 }

@@ -1,8 +1,13 @@
 import { useState, useEffect, ChangeEventHandler, ChangeEvent, useReducer } from 'react'
 import './Signup.css'
 
+type userDetails = {
+    username : string,
+    payroll : boolean,
+}
+
 type States = {
-    setLoggedInUser: ((loggedInUser: string) => void);
+    setLoggedInUser: ((userDetails: userDetails) => void);
     setUserBalance: ((userBalance: number) => void);
 }
 
@@ -31,7 +36,7 @@ function Login(props : States) {
             .then((myJson) => {
                 if (myJson.token) {
                     localStorage.setItem("token", myJson.token);
-                    props.setLoggedInUser(myJson.user.username);
+                    props.setLoggedInUser({username : myJson.user.username, payroll: myJson.permissions.payrolls});
                     props.setUserBalance(myJson.user.balance);
                     setServerResponse("Logged in!");
                 } else {

@@ -31,6 +31,7 @@ app.post("/jeeps/reserve", async (req : RequestWithJWTBody, res) => {
   }
   // ISO String
   const reservationDate = req.body.reservationDate;
+  const lojacked = false;
   const reservations = await client.reservation.findMany({
     where: {
       jeepModel,
@@ -49,6 +50,7 @@ app.post("/jeeps/reserve", async (req : RequestWithJWTBody, res) => {
       user : {connect : { id : userId }},
       jeepModel,
       reservationDate,
+      lojacked
     }
   });
   const updatedUser = await client.user.update({
@@ -89,15 +91,30 @@ app.post("/signup", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const passwordHash = await bcrypt.hash(password, 10);
+  const userType = req.body.usertype;
+
   const user = await client.user.create({
     data: {
       username,
       passwordHash,
-      balance: 1000
+      balance: 1000,
     },
   });
+  
+  let payrolls = false;
+  if (userType == "manager") {
+    payrolls = true;
+  }
+
+  const permissions = await client.permissions.create({
+    data: {
+      user : {connect : { id : user.id }},
+      payrolls,
+    },
+  });
+
   const token = jwt.sign({userId: user.id, balance: user.balance}, process.env.ENCRYPTION_KEY!!);
-  res.json({"user" : { "id" : user?.id, "username" : user?.username, "balance" : user?.balance }, token});
+  res.json({"user" : { "id" : user?.id, "username" : user?.username, "balance" : user?.balance, permissions}, token});
 });
 
 app.post("/login", async (req : RequestWithJWTBody, res) => {
@@ -119,8 +136,14 @@ app.post("/login", async (req : RequestWithJWTBody, res) => {
     return;
   }
 
+  const permissions = await client.permissions.findFirst({
+    where: {
+      userId : user.id,
+    }
+  });
+
   const token = jwt.sign({ userId: user.id, balance: user.balance }, process.env.ENCRYPTION_KEY!!);
-  res.json({"user" : { "id" : user?.id, "username" : user?.username, "balance" : user?.balance }, token});
+  res.json({"user" : { "id" : user?.id, "username" : user?.username, "balance" : user?.balance, permissions}, token});
 });
 
 app.listen(3000, () => {

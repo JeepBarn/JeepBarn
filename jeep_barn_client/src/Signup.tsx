@@ -1,17 +1,21 @@
 import { useState, useEffect, ChangeEventHandler, ChangeEvent, useReducer } from 'react'
 import './Signup.css'
 
+type userDetails = {
+    username : string,
+    payroll : boolean,
+}
+
 type States = {
-    setLoggedInUser: ((loggedInUser: string) => void);
+    setLoggedInUser: ((userDetails: userDetails) => void);
     setUserBalance: ((userBalance: number) => void);
 }
 
 function Signup(props : States) {
-    const [value, setValue] = useState("");
 
-    const handleChange = (event) => {
+    const handleChange = (event : React.ChangeEvent<HTMLSelectElement>) => {
 
-    setValue(event.target.value);
+        setusertype(event.currentTarget.value);
 
     };
 
@@ -40,7 +44,7 @@ function Signup(props : States) {
             .then((myJson) => {
                 if (myJson.token) {
                     localStorage.setItem("token", myJson.token);
-                    props.setLoggedInUser(myJson.user.username);
+                    props.setLoggedInUser({username : myJson.user.username, payroll: myJson.user.permissions.payrolls});
                     props.setUserBalance(myJson.user.balance);
                     setServerResponse("Account created!");
                 }
@@ -53,7 +57,7 @@ function Signup(props : States) {
                 <input type="text" placeholder="Username" onChange={(e) => {setUsername(e.target.value)}}/>
                 <input type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}}/>
                 <label>
-                    <select name="usertype" id="1" value={value} onChange={handleChange}>
+                    <select name="usertype" id="1" value={usertype} onChange={handleChange}>
                         <option value="customer">Customer</option>
                         <option value="clerk">Clerk</option>
                         <option value="manager">Manager</option>
