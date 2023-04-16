@@ -40,10 +40,10 @@ function App() {
         <div>
         </div>
         <div className="navigation">
-          <button className="navButton" onClick={() => setPage("Login")}>Login</button>
-          <button className="navButton" onClick={() => setPage("Signup")}>Signup</button>
-          <button className="navButton" onClick={() => setPage("Reservations")}>Reservations</button>
-          <button className="navButton" onClick={() => setPage("Account")}>Account</button>
+          {(loggedInUser.username==="") && <button className="navButton" onClick={() => setPage("Login")}>Login</button>}
+          {(loggedInUser.username==="") && <button className="navButton" onClick={() => setPage("Signup")}>Signup</button>}
+          {!(loggedInUser.username==="") && <button className="navButton" onClick={() => setPage("Reservations")}>Reservations</button>}
+          {!(loggedInUser.username==="") && <button className="navButton" onClick={() => setPage("Account")}>Account</button>}
           {loggedInUser.manager && <button className="navButton" onClick={() => setPage("Management")}>Managment</button>}
         </div>
       </nav>
