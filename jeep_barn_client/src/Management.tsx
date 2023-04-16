@@ -9,7 +9,7 @@ type User = {
 
 function Management() {
 
-    const [clerks, setClerks] = useState<User[]>([{id: 1, username: "bob", passwordHash: "123", balance: 1}]);
+    const [clerks, setClerks] = useState<User[]>([]);
 
     useEffect(() => {
         const options = {
