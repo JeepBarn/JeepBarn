@@ -23,6 +23,7 @@ function Calendar(props : States) {
     const [reservedDays, setReservedDays] = useState<number[]>();
     const [jeepModel, setJeepModel] = useState("jeep50");
     const [jeepPrice, setJeepPrice] = useState(50);
+    const [insurance, setInsurance] = useState(false);
 
     // Updates reserved dates on month change
     useEffect(() => {
@@ -52,6 +53,7 @@ function Calendar(props : States) {
         const data = {
             jeepModel,
             reservationDate,
+            insurance,
         }
         const options = {
             method: 'POST',
@@ -161,7 +163,11 @@ function Calendar(props : States) {
                         })}
                 </div>
             </div>
-            <button className="reserve" onClick={reserveDate}>Reserve ${jeepPrice} Jeep for {`${months[monthIndex]} ${day}, ${year}`}</button>
+            <div className="checkboxes">
+                <span className="label">Rental Insurance ($100)</span>
+                <input className="checkbox" type="checkbox" checked={insurance} onChange={() => setInsurance((prevInsurance) => !prevInsurance)} />
+            </div>
+            <button className="reserve" onClick={reserveDate}>Reserve ${jeepPrice} Jeep for {`${months[monthIndex]} ${day}, ${year}`} {(insurance ? "with insurance (+$100)" : "")}</button>
             {serverResponse}
         </div>
     )

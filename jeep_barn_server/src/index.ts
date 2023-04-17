@@ -37,7 +37,7 @@ app.post("/jeeps/reserve", async (req : RequestWithJWTBody, res) => {
   }
   // ISO String
   const reservationDate = req.body.reservationDate;
-  const lojacked = false;
+  const lojacked = req.body.insurance;
   const reservations = await client.reservation.findMany({
     where: {
       jeepModel,

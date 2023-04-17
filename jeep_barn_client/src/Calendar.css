@@ -16,6 +16,24 @@
   border-radius: 10px;
 }
 
+.label {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.checkbox {
+  margin-left: 12px;
+  position: relative;
+  vertical-align: middle;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+}
+
 .reservedButton {
   background-color: rgb(131, 131, 131);
   width: 100%;
