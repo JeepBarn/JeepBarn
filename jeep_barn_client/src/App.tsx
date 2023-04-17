@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
 import Calendar from './Calendar';
 import Signup from './Signup';
@@ -8,6 +7,7 @@ import Account from './Account';
 import Management from './Management';
 
 type userDetails = {
+  id: number,
   username : string,
   clerk : boolean,
   manager : boolean,
@@ -15,12 +15,12 @@ type userDetails = {
 
 function App() {
   const [page, setPage] = useState("Login");
-  const [loggedInUser, setLoggedInUser] = useState<userDetails>({username: "", clerk: false, manager : false});
+  const [loggedInUser, setLoggedInUser] = useState<userDetails>({id: -1, username: "", clerk: false, manager : false});
   const [userBalance, setUserBalance] = useState(0);
 
   function logout() {
     localStorage.removeItem("token");
-    setLoggedInUser({username: "", clerk: false, manager : false});
+    setLoggedInUser({id: -1, username: "", clerk: false, manager : false});
     setPage("Login");
   }
 
@@ -44,7 +44,7 @@ function App() {
       {(page === "Login" && <Login setLoggedInUser={setLoggedInUser} setUserBalance={setUserBalance} />)}
       {(page === "Signup" && <Signup setLoggedInUser={setLoggedInUser} setUserBalance={setUserBalance} />)}
       {(page === "Reservations" && <Calendar setUserBalance={setUserBalance} />)}
-      {(page === "Account" && <Account setUserBalance={setUserBalance} />)}
+      {(page === "Account" && <Account setUserBalance={setUserBalance} userId={loggedInUser.id}/>)}
       {(page === "Management" && <Management/>)}
     </div>
   )

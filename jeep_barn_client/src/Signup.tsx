@@ -2,6 +2,7 @@ import { useState, useEffect, ChangeEventHandler, ChangeEvent, useReducer } from
 import './Signup.css'
 
 type userDetails = {
+    id: number,
     username : string,
     clerk : boolean,
     manager : boolean,
@@ -46,6 +47,7 @@ function Signup(props : States) {
                 if (myJson.token) {
                     localStorage.setItem("token", myJson.token);
                     props.setLoggedInUser({
+                        id: myJson.user.id,
                         username : myJson.user.username,
                         clerk : myJson.user.permissions.clerk,
                         manager: myJson.user.permissions.manager

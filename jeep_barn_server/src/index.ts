@@ -72,6 +72,16 @@ app.post("/jeeps/reserve", async (req : RequestWithJWTBody, res) => {
   res.json({reservation, "user" : { "balance" : updatedUser.balance }});
 });
 
+app.get("/res/:userId", async (req : RequestWithJWTBody, res) => {
+  const userId = req.params.userId;
+
+  const reservations = await client.user.findFirst({
+    where: { id: Number(userId) },
+    include: { reservations: true }
+  })
+  res.json(reservations?.reservations);
+});
+
 function daysInMonth(year : number, monthIndex : number) {
   return (new Date(year, monthIndex+1, 0)).getDate();
 }
@@ -92,6 +102,33 @@ app.get("/jeeps/:jeepModel/:year/:monthIndex", async (req : RequestWithJWTBody, 
   });
   res.json(reservations.map(reservation => (new Date(reservation.reservationDate)).getDate()));
 });
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                         *
+ *                    User Money                           *
+ *                                                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+app.post("/money", async (req, res) => {
+  const userId = req.body.userId;
+  const money = req.body.money;
+
+  if (userId < 0) {
+    res.status(401).json({ message: "No User Found" });
+    return;
+  }
+  
+  const updatedUser = await client.user.update({
+    where: {
+      id: userId
+    },
+    data: {
+      balance: {
+        increment: money,
+      }
+    }
+  });
+  res.json({"user" : { "balance" : updatedUser.balance }});
+})
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                         *
