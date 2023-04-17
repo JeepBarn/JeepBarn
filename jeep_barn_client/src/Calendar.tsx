@@ -19,7 +19,7 @@ function Calendar(props : States) {
     const [serverResponse, setServerResponse] = useState("");
     const [monthIndex, setMonthIndex] = useState<number>(new Date().getMonth());
     const [year, setYear] = useState<number>(new Date().getFullYear());
-    const [day, setDay] = useState<number>(new Date().getDay());
+    const [day, setDay] = useState<number>(new Date().getDay() + 1);
     const [reservedDays, setReservedDays] = useState<number[]>();
     const [jeepModel, setJeepModel] = useState("jeep50");
     const [jeepPrice, setJeepPrice] = useState(50);
@@ -145,7 +145,6 @@ function Calendar(props : States) {
                 </button>
             </div>
             <div className="calendar">
-                <h1 className="title">{months[monthIndex]}</h1>
                 <div className="grid">
                     <div className="cell" style={{gridColumnStart:firstOfMonth()+1}}>
                         <button className={reservedDays?.includes(1) && "reservedButton" || "button"} onClick={() => {
@@ -161,9 +160,9 @@ function Calendar(props : States) {
                             )
                         })}
                 </div>
-                <button className="reserve" onClick={reserveDate}>Reserve ${jeepPrice} Jeep for {`${months[monthIndex]} ${day}, ${year}`}</button>
-                {serverResponse}
             </div>
+            <button className="reserve" onClick={reserveDate}>Reserve ${jeepPrice} Jeep for {`${months[monthIndex]} ${day}, ${year}`}</button>
+            {serverResponse}
         </div>
     )
 }

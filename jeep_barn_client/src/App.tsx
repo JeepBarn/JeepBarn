@@ -21,24 +21,18 @@ function App() {
   function logout() {
     localStorage.removeItem("token");
     setLoggedInUser({username: "", clerk: false, manager : false});
+    setPage("Login");
   }
 
   return (
     <div className="App">
       <div className="welcome">
-        <div>
-          {!(loggedInUser.username==="") && "Hello, " + loggedInUser.username}
-        </div>
-        <div>
-          {!(loggedInUser.username==="") && `Money: $${userBalance}`}
-        </div>
+        {!(loggedInUser.username==="") && <button className="navButton">{loggedInUser.username + " ($" + userBalance +")"}</button>}
       </div>
       <div className="logout">
         {!(loggedInUser.username==="") && <button className="logoutButton" onClick={logout}>Logout</button>}
       </div>
       <nav>
-        <div>
-        </div>
         <div className="navigation">
           {(loggedInUser.username==="") && <button className="navButton" onClick={() => setPage("Login")}>Login</button>}
           {(loggedInUser.username==="") && <button className="navButton" onClick={() => setPage("Signup")}>Signup</button>}
@@ -52,7 +46,6 @@ function App() {
       {(page === "Reservations" && <Calendar setUserBalance={setUserBalance} />)}
       {(page === "Account" && <Account setUserBalance={setUserBalance} />)}
       {(page === "Management" && <Management/>)}
-
     </div>
   )
 }
