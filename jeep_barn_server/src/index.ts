@@ -132,25 +132,24 @@ app.post("/jeeps/cancel", async (req : RequestWithJWTBody, res) => {
       id: reservationId
     }
   });
-  
-  const user = await client.user.findUnique({
+
+  console.log("AYO");
+  console.log(Number(reservation.jeepModel.substring(4)));
+  console.log(reservation.lojacked ? 100 : 0);
+  console.log(Number(reservation.jeepModel.substring(4)) + Number(reservation.lojacked ? 100 : 0));
+
+  const updatedUser = await client.user.update({
     where: {
       id: reservation.userId
+    },
+    data: {
+      balance: {
+        increment: Number(reservation.jeepModel.substring(4)) + Number(reservation.lojacked ? 100 : 0)
+      }
     }
   });
 
-  if (user) {
-    const updatedUser = await client.user.update({
-      where: {
-        id: reservation.userId
-      },
-      data: {
-        balance: user.balance + Number(reservation.jeepModel.substring(4) + reservation.lojacked ? 100 : 0)
-      }
-    });
-  }
-
-  res.json(reservation);
+  res.json(updatedUser);
 });
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

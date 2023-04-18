@@ -54,7 +54,7 @@ function Account(props : States) {
                 return response.json();
             })
             .then((myJson) => {
-                console.log(myJson);
+                props.setUserBalance(myJson.balance);
             });
     }
 
