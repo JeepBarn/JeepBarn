@@ -65,7 +65,7 @@ app.post("/jeeps/reserve", async (req : RequestWithJWTBody, res) => {
     },
     data: {
       balance: {
-        decrement: jeepCost
+        decrement: jeepCost + (lojacked ? 100 : 0)
       }
     }
   });
@@ -101,6 +101,56 @@ app.get("/jeeps/:jeepModel/:year/:monthIndex", async (req : RequestWithJWTBody, 
     }
   });
   res.json(reservations.map(reservation => (new Date(reservation.reservationDate)).getDate()));
+});
+
+app.post("/jeeps/release", async (req : RequestWithJWTBody, res) => {
+  const userId = req.jwtBody?.userId;
+  if (!userId) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+  const reservationId = req.body.id;
+
+  const reservation = await client.reservation.delete({
+    where: {
+      id: reservationId
+    }
+  });
+  res.json(reservation);
+});
+
+app.post("/jeeps/cancel", async (req : RequestWithJWTBody, res) => {
+  const userId = req.jwtBody?.userId;
+  if (!userId) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+  const reservationId = req.body.id;
+
+  const reservation = await client.reservation.delete({
+    where: {
+      id: reservationId
+    }
+  });
+  
+  const user = await client.user.findUnique({
+    where: {
+      id: reservation.userId
+    }
+  });
+
+  if (user) {
+    const updatedUser = await client.user.update({
+      where: {
+        id: reservation.userId
+      },
+      data: {
+        balance: user.balance + Number(reservation.jeepModel.substring(4) + reservation.lojacked ? 100 : 0)
+      }
+    });
+  }
+
+  res.json(reservation);
 });
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -220,6 +270,17 @@ app.get("/clerks", async (req : RequestWithJWTBody, res) => {
   });
 
   res.json(clerks);
+});
+
+app.get("/lojacks", async (req : RequestWithJWTBody, res) => {
+
+  const lojacks = await client.reservation.findMany({
+    where: {
+      lojacked : true,
+    }
+  });
+
+  res.json(lojacks);
 });
 
 app.listen(3000, () => {

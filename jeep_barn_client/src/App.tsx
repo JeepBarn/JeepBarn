@@ -5,6 +5,7 @@ import Signup from './Signup';
 import Login from './Login';
 import Account from './Account';
 import Management from './Management';
+import Lojack from './Lojack';
 
 type userDetails = {
   id: number,
@@ -39,6 +40,7 @@ function App() {
           {!(loggedInUser.username==="") && <button className="navButton" onClick={() => setPage("Reservations")}>Reservations</button>}
           {!(loggedInUser.username==="") && <button className="navButton" onClick={() => setPage("Account")}>Account</button>}
           {loggedInUser.manager && <button className="navButton" onClick={() => setPage("Management")}>Managment</button>}
+          {loggedInUser.clerk && <button className="navButton" onClick={() => setPage("Lojack")}>Lojack</button>}
         </div>
       </nav>
       {(page === "Login" && <Login setLoggedInUser={setLoggedInUser} setUserBalance={setUserBalance} />)}
@@ -46,6 +48,7 @@ function App() {
       {(page === "Reservations" && <Calendar setUserBalance={setUserBalance} />)}
       {(page === "Account" && <Account setUserBalance={setUserBalance} userId={loggedInUser.id}/>)}
       {(page === "Management" && <Management/>)}
+      {(page === "Lojack" && <Lojack/>)}
     </div>
   )
 }
