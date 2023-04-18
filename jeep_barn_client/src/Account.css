@@ -1,0 +1,40 @@
+.input {
+  background-color: rgb(194, 194, 194);
+  color: black;
+}
+
+.grouping {
+  display: flex;
+  flex-direction: column;
+  min-width: 225pt;
+  flex-wrap: wrap;
+  padding: 2pt;
+  padding-left: 5pt;
+  border: 2pt solid lightgray;
+  border-radius: 5pt;
+  margin: 3pt;
+}
+
+.trashcanbutton {
+  width: min-content;
+  height: min-content;
+  padding: 0pt;
+  text-align: center;
+  background-color: lightgray;
+}
+
+.toptobottom {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidetoside {
+  display: flex;
+  flex-direction: row;
+  min-width: 100pt;
+  justify-content: space-between;
+}
+
+.padright {
+  padding-right: 10pt;
+}
